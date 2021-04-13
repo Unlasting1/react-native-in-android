@@ -1,0 +1,16 @@
+{
+  "name": "miemie-android",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "start": "yarn react-native start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-native": "^0.64.0"
+  }
+}
