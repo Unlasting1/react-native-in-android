@@ -28,6 +28,8 @@ import {
     ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import bridge from './src/util/bridge';
+
 const styles = StyleSheet.create({
     sectionContainer: {
         marginTop: 32,
@@ -83,7 +85,7 @@ const App = () => {
     const backgroundStyle = {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
-
+    bridge.toast('111');
     return (
         <SafeAreaView style={backgroundStyle}>
             <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'}/>

@@ -12,8 +12,11 @@ import com.facebook.react.PackageList;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.soloader.SoLoader;
 
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.List;
 public class MyReactActivity extends Activity implements DefaultHardwareBackBtnHandler {
     private ReactRootView mReactRootView;
     private ReactInstanceManager mReactInstanceManager;
+    private ReactContext reactContext;
     private final int OVERLAY_PERMISSION_REQ_CODE = 1;  // 任写一个值
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,8 @@ public class MyReactActivity extends Activity implements DefaultHardwareBackBtnH
         List<ReactPackage> packages = new PackageList(getApplication()).getPackages();
         // 有一些第三方可能不能自动链接，对于这些包我们可以用下面的方式手动添加进来：
         // packages.add(new MyReactNativePackage());
+        packages.add(new CustomToastPackage()); // <-- 添加这一行，类名替换成你的Package类的名字 name.
+        packages.add(new BridgePackage());
         // 同时需要手动把他们添加到`settings.gradle`和 `app/build.gradle`配置文件中。
 
         mReactInstanceManager = ReactInstanceManager.builder()
@@ -53,6 +59,7 @@ public class MyReactActivity extends Activity implements DefaultHardwareBackBtnH
         // "AppRegistry.registerComponent()"的第一个参数
         mReactRootView.startReactApplication(mReactInstanceManager, "MyReactNativeApp", null);
 
+        reactContext = mReactInstanceManager.getCurrentReactContext();
         setContentView(mReactRootView);
     }
 
@@ -107,5 +114,13 @@ public class MyReactActivity extends Activity implements DefaultHardwareBackBtnH
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    public void sendEvent(ReactContext reactContext,
+                           String eventName,
+                           WritableMap params) {
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
     }
 }
